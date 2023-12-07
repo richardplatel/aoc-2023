@@ -7,7 +7,7 @@ TRANSLATION = {
   'A' => 'E',
   'K' => 'D',
   'Q' => 'C',
-  'J' => '*',
+  'J' => '*',  # alphabetically less than '2'
   'T' => 'A'
 }.tap { |h| h.default_proc = ->(h,k) { k } }
 
