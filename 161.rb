@@ -13,9 +13,10 @@ class Beam
   class << self
     def step(beam)
       if beam.move_to_next_pos
-        if ! $board_visits[beam.row][beam.col].include?(beam.direction)
-          $board_visits[beam.row][beam.col] << beam.direction
-          $board_visits[beam.row][beam.col].uniq!
+        # if ! $board_visits[beam.row][beam.col].include?(beam.direction)
+        #   $board_visits[beam.row][beam.col] << beam.direction
+        if true
+          $board_visits[beam.row][beam.col] = ["X"]
 
 
           case beam.under
@@ -150,7 +151,11 @@ $board_visits[0][0] << RIGHT
 # print_board
 until $beams.empty?
   $beams = $beams.flat_map { |b| Beam.step(b) }.compact
-  # pinspect $beams
+  $beams = $beams.uniq { |b| "#{b.position}#{b.direction}"}
+  puts "\e[H\e[2J"
+  puts $beams.length
+  puts count_energized
+  puts ("---")
   # print_board
 end
 
