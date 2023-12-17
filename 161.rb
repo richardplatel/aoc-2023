@@ -13,12 +13,9 @@ class Beam
   class << self
     def step(beam)
       if beam.move_to_next_pos
-        # if ! $board_visits[beam.row][beam.col].include?(beam.direction)
-        #   $board_visits[beam.row][beam.col] << beam.direction
-        if true
-          $board_visits[beam.row][beam.col] = ["X"]
-
-
+        if ! $board_visits[beam.row][beam.col].include?(beam.direction)
+          $board_visits[beam.row][beam.col] << beam.direction
+        
           case beam.under
           when '.' then [beam]
           when '|'
@@ -121,7 +118,7 @@ def print_board(animate: true)
   brd.each do |r|
     puts(r.join.gsub('.', ' '))
   end
-  sleep 0.5 if animate
+  sleep 0.001 if animate
 end
 
 def count_energized
@@ -144,8 +141,8 @@ $board_visits = (0...$max_row).map { (0...$max_col).map { [] }}
 #pinspect $board_visits
 
 # [ [location, direction] ]
-$beams = [Beam.new([0,0], RIGHT)]
-$board_visits[0][0] << RIGHT
+$beams = [Beam.new([0,-1], RIGHT)]
+# $board_visits[0][0] << RIGHT
 
 # pinspect $beams
 # print_board
@@ -153,10 +150,10 @@ until $beams.empty?
   $beams = $beams.flat_map { |b| Beam.step(b) }.compact
   $beams = $beams.uniq { |b| "#{b.position}#{b.direction}"}
   puts "\e[H\e[2J"
-  puts $beams.length
-  puts count_energized
-  puts ("---")
-  # print_board
+  # puts $beams.length
+  # puts count_energized
+  # puts ("---")
+  print_board
 end
 
 # $board_visits.each { |row| pinspect row}
