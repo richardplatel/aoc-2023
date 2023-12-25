@@ -2,14 +2,18 @@ GEM
   remote: https://rubygems.org/
   specs:
     pkg-config (1.5.6)
+    rexml (3.2.6)
     rmagick (5.3.0)
       pkg-config (~> 1.4)
+    ruby-graphviz (1.2.5)
+      rexml
 
 PLATFORMS
   arm64-darwin-22
 
 DEPENDENCIES
   rmagick
+  ruby-graphviz
 
 BUNDLED WITH
    2.4.10
