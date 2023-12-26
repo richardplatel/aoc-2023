@@ -13,7 +13,7 @@ class Hail
 
   def initialize(line)
     @input_line = line
-    (@start, @velocity) = line.split('@').map{|x| x.split(',').map(&:to_i)}
+    (@start, @velocity) = line.split('@').map{|x| x.split(',').map(&:to_f)}
   end
 
   def inspect
@@ -28,20 +28,12 @@ class Hail
     @velocity[Y]
   end
 
-  def mz
-    @velocity[Z]
-  end
-
   def bx
     @start[X]
   end
 
   def by
     @start[Y]
-  end
-
-  def bz
-    @start[Z]
   end
 
   def xy_intersect_times(o)
@@ -68,26 +60,6 @@ class Hail
       p[Y].between?(bounds[0][Y], bounds[1][Y])
   end
 
-  def vel_str(x)
-    if x >= 0
-      "+ #{x}"
-    else
-      "- #{x.abs}"
-    end
-  end
-
-  def xsquasion(t)
-  # sympy.Eq(x + a * t, 19 - 2 * t),
-  # sympy.Eq(y + b * t, 13 + t),
-  # sympy.Eq(z + c * t, 30 - 2 * t),
-
-    [
-      "sympy.Eq(x + a * #{t}, #{bx} #{vel_str(mx)} * #{t})",
-      "sympy.Eq(y + b * #{t}, #{by} #{vel_str(my)} * #{t})",
-      "sympy.Eq(z + c * #{t}, #{bz} #{vel_str(mz)} * #{t})",
-    ]
-  end
-
 
 end
 
@@ -103,10 +75,31 @@ bounds = [
 
 ]
 
-tvars = ['t', 'u', 'v']
+sum = 0
+$world.combination(2) do |h1, h2|
+  intersects = h1.xy_intersect_times(h2)
+  if intersects && intersects.all?{|p| p >= 0} && h1.xy_in_bounds_at(bounds, intersects[0])
+    puts("#{h1.inspect} * #{h2.inspect}")
+    sum += 1
+  end
+end
 
-out = tvars.each_with_index.map do | t, i |
-  $world[i].xsquasion(t).join(", \n")
-end.join(",\n\n")
+puts("---")
+puts(sum)
 
-puts(out)
+# ba + ma * t1 = b1 + m1 * t1
+#   ba - b1 = m1 * t1 - ma * t1
+#   ba - b1 = (m1 - ma) * t1
+
+#   (ba - b1)
+#   ---------    = t1
+#   (m1 - ma )
+
+
+#   (ba - b2)
+#   ---------  = t1 + td1
+#   (m2 - ma)
+
+# ba + ma * t2 = b2 + m2 * t2
+# ...
+# ba + ma * tn = bn + mn * tn
